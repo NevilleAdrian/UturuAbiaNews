@@ -1,0 +1,207 @@
+﻿@model UturuAbiaNews.Controllers.ContentPageViewModel
+@{
+	ViewData["Title"] = "Details";
+	int noOfAds = 0;
+	var first = 0;
+}
+@functions{
+	string ReturnClass(int i)
+	{
+		string result = (i == 0) ? "item active" : "item";
+		return result;
+	}
+
+	string ReturnActive(int i)
+	{
+		if (i == 0)
+			return "active";
+		return string.Empty;
+	}
+}
+
+
+<div class="col-md-8 no-padding">
+	<h3 class="bold-red">@Model.Content.Category.CategoryName</h3>
+	<div class="col-md-12 for-mobile no-padding">
+		<figure>
+			<img src="../../@Model.Content.ImageUrl" alt="@Model.Content.ContentTitle" class="content-img img-responsive"/>
+			<figcaption><h5 class="entertainment-1">@Model.Content.ContentTitle</h5><h5 class="move"><i class="far fa fa-clock-o"></i>@Model.Content.DatePublished.ToString("dd/MM/yyyy")</h5></figcaption>
+		</figure>
+		<p class="box">@Model.Content.LongDescription</p>
+		<p>
+			<span>
+				<a href='@($"https://www.facebook.com/sharer/sharer.php?u=https://uturuabianews.com{Url.Action("Details", "Content", new { id = Model.Content.ID})}")' target="_blank">
+					<i class="share-button fa fa-facebook"></i>
+				</a>
+			</span>
+			<span> 
+				<a href='@($"https://twitter.com/intent/tweet?text={Model.Content.ShortDescription}&url=https://uturuabianews.com{Url.Action("Details", "Content", new { id = Model.Content.ID})}")' target="_blank">
+					<i class="share-button fa fa-twitter"></i>
+				</a>
+			</span>
+		</p>
+		@if (!(string.IsNullOrEmpty(ViewData["Posted"].ToString())))
+		{
+		<p>@ViewData["Posted"].ToString()</p>
+		}
+		else
+		{
+		<form asp-action="Create" asp-controller="Comments">
+			<h3>Add comment</h3>
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" name="ContentID" value="@Model.Content.ID" />
+			<div class="form-group">
+				<label class="control-label"></label>
+				<textarea name="Message" class="form-it form-control" cols="15" rows="10"></textarea>
+				<span asp-validation-for="Comments.FirstOrDefault().Message" class="text-danger"></span>
+
+			</div>
+
+			<div class="form-group half-width">
+				<label asp-for="Comments.FirstOrDefault().UserName" class="control-label"></label>
+				<input asp-for="Comments.FirstOrDefault().UserName" class="form-it form-control" required="required" />
+				<span asp-validation-for="Comments.FirstOrDefault().UserName" class="text-danger"></span>
+			</div>
+			<div class="form-group half-width">
+				<label asp-for="Comments.FirstOrDefault().Email" class="control-label"></label>
+				<input asp-for="Comments.FirstOrDefault().Email" class="form-it form-control" required="required" />
+				<span asp-validation-for="Comments.FirstOrDefault().Email" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Post" class="butt btn btn-default" />
+			</div>
+		</form>
+		}
+		
+		@if (Model.Comments.Count > 0)
+		{
+			<h3>Comments</h3>
+			foreach (Comment comment in Model.Comments)
+			{
+				 <p class="form-it "><i class=" shift far fa fa-user"></i>@comment.UserName,<br/> <br/>
+				<i class="shift far fa fa-envelope"></i>@comment.Message</p>
+			}
+		}
+</div>
+</div>
+
+	<!-- Top level right adverts -->
+	<div class="col-md-4 add-padding-left-30-right-0">
+		@if (Model.TopRightAdvertisements.Count > 0)
+		{
+			<h3>ADS</h3>
+			@foreach (var topAdvert in Model.TopRightAdvertisements)
+			{
+				if (noOfAds > 1)
+				{
+					break;
+				}
+				else
+				{
+
+					{
+						<div class="col-md-12 for-mobile no-padding">
+							<img src="../../@topAdvert.AdvertImage" alt="@topAdvert.AdvertName" class="img-responsive" />
+							<p class="entertainment-1">@topAdvert.AdvertName</p>
+						</div>
+
+
+					}
+				}
+				noOfAds++;
+			}
+		}
+		@if (Model.Trending.Count != 0)
+		{
+			var highestTrending = Model.Trending.Where(m => m.NoOfViews == Model.Trending.Select(t => t.NoOfViews).ToArray().Max()).FirstOrDefault();
+			<h3 class="trend">Trending News</h3>
+			<div class="col-md-12 for-mobile no-padding">
+				<img src="../../@highestTrending.ImageUrl" class="trending-news-height img-responsive" alt="@highestTrending.ContentTitle" />
+				<p class="entertainment-1">@highestTrending.ContentTitle</p>
+				<p>
+					<span class="move"><i class="fa fa-clock-o"></i>@highestTrending.DateEdited.ToString("dd/MM/yyyy")</span>
+					<span class="move"> <i class="fa fa-eye"></i> @highestTrending.NoOfViews</span>
+					<span class="move"><i class="fa fa-comment-o"></i>@highestTrending.NoOfComments</span>
+				</p>
+				<p class="main">@Html.ActionLink(@highestTrending.ShortDescription, "Details", "Contents", new { id = highestTrending.ID })</p>
+
+
+
+			</div>
+		}
+		<!-- second advert -->
+		<div class="col-md-12 for-mobile no-padding">
+			@if (Model.BottomRightAdvertisements.Count > 0)
+			{
+				<h3>ADS</h3>
+				@foreach (var advert in Model.BottomRightAdvertisements)
+				{
+					{
+						<div class="col-md-12 for-mobile no-padding">
+							<img src="../../@advert.AdvertImage" alt="@advert.AdvertName" class="img-responsive" />
+							<p class="entertainment-1">@advert.AdvertName</p>
+						</div>
+					}
+
+				}
+			}
+		</div>
+	</div>
+
+	<!-- Other related news -->
+	@if (Model.RelatedNews.Count > 1)
+	{
+	<div class="col-md-12 no-padding">
+		<h3>Related news</h3>
+		@foreach (var relatedNews in Model.RelatedNews)
+		{
+			<div class="col-md-2 for-mobile no-padding">
+				<div class="related-news">
+					<img src="../../@relatedNews.ImageUrl" alt="@relatedNews.ContentTitle" class="img-responsive final-height" />
+					<p class="entertainment-1">@Html.ActionLink(relatedNews.ContentTitle, "Details", "Contents", new { id = relatedNews.ID }, new { @class = "small-text-for-side" })</p>
+				</div>
+			</div>
+		}
+	</div>
+	}
+
+	<!-- Bottom advertisment -->
+	@if (Model.BottomAdvertisements.Count != 0)
+	{
+		<div class="row">
+			<div class=" move-down container">
+				<div class="col-md-12 no-padding">
+					<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+						<ol class="carousel-indicators">
+							@for (int i = 0; i < Model.BottomAdvertisements.Count; i++)
+							{
+								<li data-target="#myCarousel" data-slide-to="@i" class="@ReturnActive(i)"></li>
+
+							}
+						</ol>
+						<div class="carousel-inner" role="listbox">
+							@foreach (var item in Model.BottomAdvertisements)
+							{
+
+								<div class="@ReturnClass(first)">
+									<img src="../../@item.AdvertImage" alt="@item.AdvertName" class="img-responsive advert-image" />
+
+								</div>
+								first++;
+							}
+						</div>
+						<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						</a>
+						<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	}
+

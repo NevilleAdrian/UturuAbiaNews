@@ -1,0 +1,450 @@
+﻿@model UturuAbiaNews.Controllers.HomeViewModel
+@{
+	ViewData["Title"] = "Home Page";
+	int take = 0;
+	var first = 0;
+	var firstCategory = 0;
+	var secondCategory = 0;
+	var noOfVideos = 0;
+}
+
+@functions{
+	string ReturnClass(int i)
+	{
+		string result = (i == 0) ? "item active" : "item";
+		return result;
+	}
+
+	string ReturnActive(int i)
+	{
+		if (i == 0)
+			return "active";
+		return string.Empty;
+	}
+
+	(bool, string) WordSpliter(string shortDescription)
+	{
+		var stringBuilder = "";
+		int count = 0;
+		var description = shortDescription.Split(" ");
+		bool longLength = false;
+		if (description.Length > 10)
+		{
+			longLength = true;
+			foreach (var word in description)
+			{
+				if (count < 10)
+				{
+					stringBuilder += $"{word} ";
+				}
+				else
+				{
+					break;
+				}
+				count++;
+			}
+			stringBuilder += "...";
+		}
+		else
+		{
+			return (longLength, stringBuilder);
+		}
+		return (longLength, stringBuilder);
+	}
+			}
+			@if (Model.Headlines.Count != 0)
+			{
+<div class="col-md-8 no-padding">
+	<h3 class="bold-red">Headlines</h3>
+
+
+	@{string urlHead = Model.Headlines.FirstOrDefault().ImageUrl;
+			urlHead = urlHead.Replace('\\', '/'); }
+
+	<div style="background-image: url('@urlHead'); background-repeat: no-repeat; background-size: cover; width: 100%; height: 450px">
+		<div class="arrange">
+			<div class="top-category ">
+				<span class="breaking-news-color-padding">@Model.Headlines.FirstOrDefault().Category.CategoryName</span>
+			</div>
+			<p class="font">
+				@Html.ActionLink(Model.Headlines.FirstOrDefault().ContentTitle, "Details", "Contents", new { id = Model.Headlines.FirstOrDefault().ID })
+			</p>
+
+			<p class="date"> 
+				<span class="move"><i class="far fa fa-clock-o"></i>@Model.Headlines.FirstOrDefault().DateEdited.ToString("dd/MM/yyyy")</span>
+				<span class="move"> <i class="far fa fa-eye"></i> @Model.Headlines.FirstOrDefault().NoOfViews</span>
+				<span class="move"><i class="far fa fa-comment-o"></i>@Model.Headlines.FirstOrDefault().NoOfComments</span>
+			</p>
+
+		</div>
+	</div>
+
+</div>
+<div class="col-md-4 add-padding-left-30-right-0 for-mobile">
+	<h3 class="breaking header-for-mobile">Breaking News</h3>
+	@if (Model.Headlines.Count > 2)
+		{
+			foreach (var item in Model.Headlines.Skip(1).TakeLast(2))
+			{
+			<div class="col-md-12 margin-bottom-5  no-padding">
+				@{string url = item.ImageUrl;
+		url = url.Replace('\\', '/');
+				}
+				<div style="background-image: url('@url'); background-repeat: no-repeat; background-size: cover; width: 100%; padding: 30px; height: 210px">
+					<div class="breaking-news top-category down">
+						<span class="breaking-news-color-padding">@item.Category.CategoryName</span>
+					</div>
+
+					<p class="culture">@Html.ActionLink(item.ContentTitle, "Details", "Contents", new { id = item.ID })</p>
+					<p>
+					<span class="move fine-clock"><i class="far fa fa-clock-o"></i> @item.DateEdited.ToString("dd/MM/yyyy")</span>
+					<span class="move fine-clock"><i class="far fa fa-eye"></i> @item.NoOfViews</span>
+					</p>
+					
+					
+				</div>
+				
+			</div>
+		}
+	}
+</div>
+	
+}
+<div class="row">
+	<div class="col-md-8">
+		@foreach (var item in Model.Categories.Take(1))
+		{
+		<div class="row">
+			<div class="col-md-12 for-mobile-category-1">
+			   
+				
+				<h3 class="red-line">@item.CategoryName</h3>
+
+				@foreach (var content in item.Contents)
+	{
+		if (firstCategory <= 1)
+		{
+						<div class="col-md-6 clearfix no-padding-but-bottom big-height">
+							@if (!string.IsNullOrEmpty(content.ImageUrl))
+	{
+								<div class="news-image">
+									<img src="@content.ImageUrl" class="height img-responsive content-images" />
+									<p class="entertainment-1">@content.ContentTitle</p>
+										<p>
+										<span class="move dark-clock"><i class="far fa fa-clock-o"></i> @content.DateEdited.ToString("dd/MM/yyyy")</span>
+										<span class="move dark-clock"><i class="far fa fa-eye"></i> @content.NoOfViews</span>
+										</p>
+									<p class="main">@Html.ActionLink(content.ShortDescription, "Details", "Contents", new { id = content.ID })</p>
+								
+								</div>
+
+							}
+
+						</div>
+					}
+					else if (firstCategory >1 && firstCategory <= 5)
+					{
+						<div class="no-padding-mobile mainest col-md-6 clearfix no-padding standard-height">
+							@if (!string.IsNullOrEmpty(content.ImageUrl))
+	{
+								<div class="col-md-12 no-padding-mobile news-image no-padding">
+									<div class="col-md-4 no-padding no-padding-mobile">
+										<img src="@content.ImageUrl" class=" img-responsive content-images" />
+									</div>
+									<div class="col-md-8 no-padding-mobile">
+										
+										<p>@Html.ActionLink(content.ShortDescription, "Details", "Contents", new { id = content.ID })</p>
+										<p>
+										<span class="move dark-clock"><i class="far fa fa-clock-o"></i> @content.DateEdited.ToString("dd/MM/yyyy")</span>
+										</p>
+									</div>
+								</div>
+
+							}
+
+						</div>
+					}
+					else {
+						<div class="col-md-12 center-block text-center">
+							@Html.ActionLink("Read More", "Details", "Categories", new { id = item.ID })
+						</div>
+					}
+					firstCategory++;
+
+
+				}
+			</div>
+			
+		</div>
+			
+
+		}
+	</div>
+	<!-- Top right advertisment -->
+	<div class="col-md-4 add-padding-left-30-right-0">
+		@if (Model.TopRightAdvertisements.Count != 0)
+	{
+			<h3 class="header-for-mobile faded-line">ADS</h3>
+			@foreach (var advert in Model.TopRightAdvertisements.Take(2))
+			{
+				<div class="col-md-12 no-padding add-padding-top-20">
+					<img src="@advert.AdvertImage" alt="@advert.AdvertName" class="img-responsive"/>
+					<p class="entertainment-1">@advert.AdvertName</p>
+					
+				</div>
+				
+				
+			}
+		}
+
+		
+
+	</div>
+	
+</div>
+
+<div class="row">
+	<div class="col-md-8 for-mobile-category-1">
+		<!-- Second featured category -->
+		@foreach (var item in Model.Categories.Skip(1).Take(1))
+		{
+			<div class="row">
+				<div class="col-md-12">
+					<h3 class="secondred-line">@item.CategoryName</h3>
+					<div class="col-md-6 for-mobile clearfix no-padding standard-height">
+					<!-- Second featured category top level -->
+						@foreach (var content in item.Contents)
+	{
+		if (secondCategory < 1)
+		{
+
+			@if (!string.IsNullOrEmpty(content.ImageUrl))
+								{
+									<div class="news-image">
+										<img src="@content.ImageUrl" class=" height img-responsive content-images" />
+										<p class="entertainment-1">@content.ContentTitle</p>
+										<p>
+									    <span class="move dark-clock"><i class="far fa fa-clock-o"></i> @content.DateEdited.ToString("dd/MM/yyyy")</span>
+										<span class="move dark-clock"><i class="far fa fa-eye"></i> @content.NoOfViews</span>
+										<p class="main">@Html.ActionLink(content.ShortDescription, "Details", "Contents", new { id = content.ID })</p>
+									
+									</div>
+									secondCategory++;
+								}
+
+							
+							}
+							else
+							{
+								break;
+							}
+							
+
+						}
+						</div>
+					<div class="col-md-6 for-mobile">
+						<!-- Second featured category bottom level -->
+						@foreach (var content in item.Contents.Skip(1))
+						{
+							if (secondCategory >= 1 && secondCategory <= 5)
+							{
+								@if (!string.IsNullOrEmpty(content.ImageUrl))
+	{
+									<div class="col-md-12 no-padding-mobile news-image no-padding-but-bottom-2">
+										<div class="col-md-3 for-mobile-top no-padding">
+											<img src="@content.ImageUrl" class="img-responsive content-images" />
+										</div>
+										<div class="col-md-9 no-padding-mobile small-text-for-side">
+
+											<p class="weight">@Html.ActionLink(content.ShortDescription, "Details", "Contents", new { id = content.ID })</p>
+											<p class="weight">
+											<span class="move dark-clock"><i class="far fa fa-clock-o"></i> @content.DateEdited.ToString("dd/MM/yyyy")</span>
+											</p>
+										</div>
+									</div>
+									secondCategory++;
+								}
+							}
+							
+						}
+					</div>
+					<!-- Second featured category "read more" -->
+					@if (secondCategory > 5)
+	{
+						<div class="col-md-12 center-block text-center">
+							@Html.ActionLink("Read More", "Details", "Categories", new { id = item.ID})
+						</div>
+					}
+
+				</div>
+
+					</div>
+
+
+		}
+	</div>
+
+	<div class="col-md-4 add-padding-left-30-right-0">
+		<!-- Trending news -->
+		@if (Model.Trending.Count != 0)
+	{
+		var highestTrending = Model.Trending.Where(m => m.NoOfViews == Model.Trending.Select(t => t.NoOfViews).ToArray().Max()).FirstOrDefault();
+			<h3 class="header-for-mobile trend faded-line">Trending News</h3>
+			<div class="col-md-12 no-padding add-padding-top-20">
+				<img src="@highestTrending.ImageUrl" class="trending-news-height img-responsive" alt="@highestTrending.ContentTitle" />
+				<p class="entertainment-1">@highestTrending.ContentTitle</p>
+				<p> 
+							<span class="move"><i class="far fa fa-clock-o"></i> @highestTrending.DateEdited.ToString("dd/MM/yyyy")</span>
+							<span class="move"> <i class="far fa fa-eye"></i> @highestTrending.NoOfViews</span>
+							<span class="move"><i class="far fa fa-comment-o"></i> @highestTrending.NoOfComments</span>
+						</p>				
+				<p class="main">@Html.ActionLink( @highestTrending.ShortDescription, "Details", "Contents", new{id = highestTrending.ID})</p>
+				
+
+
+			</div>
+		}
+
+	</div>
+
+</div>
+
+
+<script>
+	var arrayObject = {
+		videoUrl : [],
+		shortDescription : [],
+		date : []
+	};
+	
+</script>
+<div class="row">
+	<!-- Videos-->
+	@if (Model.Videos.Count != 0)
+	{
+
+
+		<div class="col-md-8 for-mobile-category-1">
+		<div class="col-md-12 no-padding-left">
+			<h3 class="thirdred-line">VIDEOS <span id="arrow"><i class="little small-icon fa fa-toggle-left"></i><i class="little small-icon fa fa-toggle-right"></i></span></h3>
+		</div>
+			@foreach (var video in Model.Videos)
+	{
+		if (Model.Videos.Count > 5 && noOfVideos <= 5)
+		{
+
+
+
+					<div class="col-md-6 for-mobile no-padding">
+					<iframe class=" height video-url-height" src="@video.VideoUrl"></iframe>
+					@{bool length = WordSpliter(video.ShortDescription).Item1;}
+					@if (length)
+	{
+		string stringBuilder = WordSpliter(video.ShortDescription).Item2;
+						<p class=" entertainment-1 padding-right-video">@stringBuilder</p>
+						<p class="date-video"> 
+							<span class="move"><i class="far fa fa-clock-o"></i> @video.DateEdited.ToString("dd/MM/yyyy")</span>
+							<span class="move"> <i class="far fa fa-eye"></i> @video.NoOfViews</span>
+							<span class="move"><i class="far fa fa-comment-o"></i> @video.NoOfComments</span>
+						</p>
+						<script>
+						arrayObject.videoUrl.push("@video.VideoUrl");
+						arrayObject.shortDescription.push("@stringBuilder");
+						arrayObject.date.push('@video.DateEdited.ToString("dd/MM/yyyy")');
+						</script>
+					}
+					else{
+						<p class=" entertainment-1 padding-right-video">@video.ShortDescription</p>
+						<p class="date-video"> 
+							<span class="move"><i class="far fa fa-clock-o"></i> @video.DateEdited.ToString("dd/MM/yyyy")</span>
+							<span class="move"> <i class="far fa fa-eye"></i> @video.NoOfViews</span>
+							<span class="move"><i class="far fa fa-comment-o"></i> @video.NoOfComments</span>
+						</p>
+						<script>
+						arrayObject.videoUrl.push("@video.VideoUrl");
+						arrayObject.shortDescription.push("@video.ShortDescription");
+						arrayObject.date.push('@video.DateEdited.ToString("dd/MM/yyyy")');
+						</script>
+					}
+				</div>
+				}
+				else
+				{
+					<script>
+						arrayObject.videoUrl.push("@video.VideoUrl");
+						arrayObject.shortDescription.push("@video.ShortDescription");
+						arrayObject.date.push('@video.DateEdited.ToString("dd/MM/yyyy")');
+					</script>
+				}
+				noOfVideos++;
+			}
+		</div>
+	}
+		<!-- Bottom right advertisment -->
+		@if (Model.BottomRightAdvertisements.Count > 0)
+	{
+			<div class="col-md-4 add-padding-left-30-right-0">
+				<h3 class="header-for-mobile faded-line">ADS</h3>
+				@foreach (var advert in Model.BottomRightAdvertisements.Take(2))
+				{
+					if (take == 2)
+					{
+						break;
+					}
+					else
+					{
+						<div class="col-md-12 no-padding add-padding-top-20">
+							<img class="img-responsive" src="@advert.AdvertImage" />
+							<p class="entertainment-1">@advert.AdvertName</p>
+							
+						</div>
+
+						
+
+
+					}
+					
+				}
+			</div>
+		}
+
+	</div>
+<!-- Bottom advertisment -->
+@if( Model.BottomAdvertisements.Count != 0 )
+	{
+	<div class="row">
+		<div class=" move-down container">
+			<div class="col-md-12 no-padding">
+				<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+					<ol class="carousel-indicators">
+						@for (int i = 0; i < Model.BottomAdvertisements.Count; i++)
+						{
+							<li data-target="#myCarousel" data-slide-to="@i" class="@ReturnActive(i)"></li>
+
+						}
+					</ol>
+					<div class="carousel-inner" role="listbox">
+						@foreach (var item in Model.BottomAdvertisements)
+	{
+
+							<div class="@ReturnClass(first)">
+								<img src="@item.AdvertImage" alt="@item.AdvertName" class="img-responsive advert-image" />
+								
+							</div>
+							first++;
+						}
+					</div>
+					<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+}

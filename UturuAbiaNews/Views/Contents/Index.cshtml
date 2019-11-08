@@ -1,0 +1,93 @@
+﻿@model IEnumerable<UturuAbiaNews.Models.Content>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="col-md-12">
+	<table class="table table-responsive">
+		<thead>
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.ContentTitle)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.ShortDescription)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.LongDescription)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.ImageUrl)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.NoOfLikes)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.IsEdited)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.DatePublished)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.DateEdited)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.VideoUrl)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Category)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.ContentTitle)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ShortDescription)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.LongDescription)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ImageUrl)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.NoOfLikes)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.IsEdited)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.DatePublished)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.DateEdited)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.VideoUrl)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Category.CategoryName)
+					</td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+						<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+						<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+

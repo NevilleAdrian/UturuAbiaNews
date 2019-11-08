@@ -1,0 +1,182 @@
+﻿@model UturuAbiaNews.Controllers.CategoryPageViewModel
+@{
+	ViewData["Title"] = "Details";
+	int noOfAds = 0;
+	var first = 0;
+}
+@functions{
+	string ReturnClass(int i)
+	{
+		string result = (i == 0) ? "item active" : "item";
+		return result;
+	}
+
+	string ReturnActive(int i)
+	{
+		if (i == 0)
+			return "active";
+		return string.Empty;
+	}
+}
+
+@if (Model.Contents.Count != 0)
+{
+	<div class="col-md-8 no-padding">
+		@{
+			Content firstContent = Model.Contents.FirstOrDefault();
+			string urlHead = firstContent.ImageUrl.Replace('\\', '/');
+		}
+		<h3 class="bold-red dark-line">@firstContent.Category.CategoryName</h3>
+		<div style="background-image: url('../../@urlHead'); background-repeat: no-repeat; background-size: cover; width: 100%; height: 450px">
+			<div class="arrange">
+				<div class="top-category ">
+					<span class="breaking-news-color-padding">@firstContent.Category.CategoryName</span>
+				</div>
+				<p class="font">
+					@Html.ActionLink(firstContent.ContentTitle, "Details", "Contents", new { id = firstContent.ID })
+				</p>
+
+				<p class="date">
+					<span class="move"><i class="fa fa-clock-o"></i> @firstContent.DateEdited.ToString("dd/MM/yyyy")</span>
+					<span class="move"> <i class="fa fa-eye"></i> @firstContent.NoOfViews</span>
+					<span class="move"><i class="fa fa-comment-o"></i> @firstContent.NoOfComments</span>
+				</p>
+
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Top level right adverts -->
+	<div class="col-md-4 add-padding-left-30-right-0">
+		@if (Model.TopRightAdvertisements.Count > 0)
+		{
+			<h3>ADS</h3>
+			@foreach (var topAdvert in Model.TopRightAdvertisements)
+			{
+				if (noOfAds > 1)
+				{
+					break;
+				}
+				else
+				{
+
+					{
+						<div class="col-md-12 for-mobile no-padding">
+							<img src="../../@topAdvert.AdvertImage" alt="@topAdvert.AdvertName" class="img-responsive" />
+							<p class="entertainment-1">@topAdvert.AdvertName</p>
+						</div>
+
+
+					}
+				}
+				noOfAds++;
+			}
+		}
+
+	</div>
+
+	<!-- All contents in a category -->
+
+	<div class="col-md-8 no-padding">
+		@if (Model.Contents.Count > 1)
+		{
+			<h3 class="breaking add-more-weight red-line">More news</h3>
+			@foreach (Content content in Model.Contents)
+			{
+				<div class="col-md-12 no-padding-mobile news-image no-padding-but-bottom-2">
+					<div class="col-md-3 no-padding-mobile no-padding">
+						<img src="../../@content.ImageUrl" class="img-responsive content-images" />
+					</div>
+					<div class="col-md-9 no-padding-mobile medium-text-for-side smaller-font-size">
+
+						<p class="weight">@Html.ActionLink(content.ShortDescription, "Details", "Contents", new { id = content.ID })</p>
+						<p class="weight">
+							<span class="move dark-clock"><i class="fa fa-clock-o"></i> @content.DateEdited.ToString("dd/MM/yyyy")</span>
+						</p>
+					</div>
+				</div>
+			}
+		}
+
+	</div>
+
+	<!-- Section for trending news and bottom right navigation -->
+	<div class="col-md-4 add-padding-left-30-right-0">
+		@if (Model.Trending.Count != 0)
+		{
+			var highestTrending = Model.Trending.Where(m => m.NoOfViews == Model.Trending.Select(t => t.NoOfViews).ToArray().Max()).FirstOrDefault();
+			<h3 class="trend faded-line">Trending News</h3>
+			<div class="col-md-12 for-mobile no-padding add-padding-top-20">
+				<img src="../../@highestTrending.ImageUrl" class="trending-news-height img-responsive" alt="@highestTrending.ContentTitle" />
+				<p class="entertainment-1">@highestTrending.ContentTitle</p>
+				<p>
+					<span class="move"><i class="fa fa-clock-o"></i> @highestTrending.DateEdited.ToString("dd/MM/yyyy")</span>
+					<span class="move"> <i class="fa fa-eye"></i> @highestTrending.NoOfViews</span>
+					<span class="move"><i class="fa fa-comment-o"></i> @highestTrending.NoOfComments</span>
+				</p>
+				<p class="main">@Html.ActionLink(@highestTrending.ShortDescription, "Details", "Contents", new { id = highestTrending.ID })</p>
+
+
+
+			</div>
+		}
+		<!-- second advert -->
+		<div class="col-md-12 for-mobile no-padding">
+			@if (Model.BottomRightAdvertisements.Count > 0)
+			{
+				<h3 class="faded-line">ADS</h3>
+				@foreach (var advert in Model.BottomRightAdvertisements)
+				{
+					{
+						<div class="col-md-12 for-mobile no-padding add-padding-top-20">
+							<img src="../../@advert.AdvertImage" alt="@advert.AdvertName" class="img-responsive" />
+							<p class="entertainment-1">@advert.AdvertName</p>
+						</div>
+					}
+
+				}
+			}
+		</div>
+	</div>
+
+	<!-- Bottom advertisment -->
+	@if (Model.BottomAdvertisements.Count != 0)
+	{
+		<div class="row">
+			<div class=" move-down container">
+				<div class="col-md-12 no-padding">
+					<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+						<ol class="carousel-indicators">
+							@for (int i = 0; i < Model.BottomAdvertisements.Count; i++)
+							{
+								<li data-target="#myCarousel" data-slide-to="@i" class="@ReturnActive(i)"></li>
+
+							}
+						</ol>
+						<div class="carousel-inner" role="listbox">
+							@foreach (var item in Model.BottomAdvertisements)
+							{
+
+								<div class="@ReturnClass(first)">
+									<img src="../../@item.AdvertImage" alt="@item.AdvertName" class="img-responsive advert-image" />
+
+								</div>
+								first++;
+							}
+						</div>
+						<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						</a>
+						<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	}
+}

@@ -1,0 +1,75 @@
+﻿@model UturuAbiaNews.Models.Content
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Content</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ContentTitle)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ContentTitle)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ShortDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ShortDescription)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LongDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LongDescription)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ImageUrl)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NoOfLikes)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NoOfLikes)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsEdited)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsEdited)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DatePublished)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DatePublished)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DateEdited)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DateEdited)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category.ID)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

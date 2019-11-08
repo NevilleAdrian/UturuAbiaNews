@@ -1,0 +1,129 @@
+﻿@using UturuAbiaNews.Data
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<UturuAbiaNews.Data.ApplicationUser> SignInManager
+@inject ApplicationDbContext db
+@{
+	List<Category> categoryTabs = db.Category.ToList();
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - UturuAbiaNews</title>
+
+	<environment include="Development">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="~/css/site.css" />
+		<link rel="stylesheet" href="~/css/style.css" />
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
+	</environment>
+	<environment exclude="Development">
+		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+		<link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+		<link rel="stylesheet" href="~/css/site.min.css" />
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+
+	</environment>
+</head>
+<body>
+	<nav class="white navbar navbar-inverse navbar-fixed-top">
+		<div class="container no-padding-right-mobile">
+			<div class="navbar-header add-padding-right">
+				<button type="button" class="no-margin-mobile navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand logo"><img src="~/images/uturulogo.png" /></a>
+			</div>
+			<div class="navbar-collapse collapse">
+
+				<ul class="nav navbar-nav">
+					<li><a asp-area="" asp-controller="Home" asp-action="Index" class="ensure-border-padding">Home</a></li>
+					@foreach (var category in categoryTabs)
+					{
+						<li>@Html.ActionLink(category.CategoryName, "Details", "Categories", new { ID = category.ID }, new { @class = "ensure-border-padding" })</li>
+
+					}
+					<li class="add-padding-right"><a href="http://www.tonokez.com" target="_blank" class="ensure-border-padding">Blog</a></li>
+				</ul>
+				@if (SignInManager.IsSignedIn(User))
+				{
+					<partial name="_LoginPartial" />
+				}
+
+			</div>
+		</div>
+	</nav>
+
+	<partial name="_CookieConsentPartial" />
+
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+
+	</div>
+
+	<footer>
+		<div class="container no-padding">
+			<div class="col-md-4 no-padding">
+				<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><img src="~/images/kez.png" class="logo" alt="logo"></a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="grey nav navbar-nav">
+					@foreach (var category in categoryTabs)
+					{
+						<li>@Html.ActionLink(category.CategoryName, "Details", "Categories", new { ID = category.ID })</li>
+					}
+				</ul>
+
+				<ul style="padding-left: 80px;">
+					<li><a href="http://facebook.com/"><i class="small-icon fa fa-facebook"></i></a></li>
+					<li><a href="http://linkedin.com/"><i class="small-icon fa fa-linkedin"></i></a></li>
+					<li><a href="http://twitter.com/"><i class="small-icon fa fa-twitter"></i></a></li>
+					<li><a href="http://plus.google.com/"><i class="small-icon fa fa-google-plus"></i> </a></li>
+				</ul>
+			</div>
+
+			<div class="col-md-12">
+				<hr class="light">
+
+			</div>
+			<div class="row text-center copyright no-padding no-margin">
+				<div class="col-12">
+					<p>&copy; @DateTime.Now.Year - UturuAbiaNews</p>
+				</div>
+
+			</div>
+		</div>
+
+	</footer>
+	<environment include="Development">
+		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="~/js/site.js" asp-append-version="true"></script>
+	</environment>
+	<environment exclude="Development">
+		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+				asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+				asp-fallback-test="window.jQuery"
+				crossorigin="anonymous"
+				integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+		</script>
+		<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+				asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+				crossorigin="anonymous"
+				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+		</script>
+		<script src="~/js/site.min.js" asp-append-version="true"></script>
+	</environment>
+
+	@RenderSection("Scripts", required: false)
+</body>
+</html>

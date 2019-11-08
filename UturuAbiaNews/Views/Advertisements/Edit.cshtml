@@ -1,0 +1,118 @@
+﻿@model UturuAbiaNews.Controllers.AdvertViewModel
+
+@{
+	ViewData["Title"] = "Edit";
+	TagBuilder tb = new TagBuilder("Select");
+	string[] array = { " -- Please place add in right position -- ", "Top right", "Bottom right", "Bottom" };
+	string name = "Position";
+	TagBuilder option1 = new TagBuilder("option");
+	TagBuilder option2 = new TagBuilder("option");
+	TagBuilder option3 = new TagBuilder("option");
+	TagBuilder option4 = new TagBuilder("option");
+	tb.Attributes.Add("name", name);
+	tb.Attributes.Add("class", "form-control");
+
+	option1.Attributes.Add("value", "0");
+	option1.InnerHtml.Append(array[0]);
+
+	option2.Attributes.Add("value", "1");
+	option2.InnerHtml.Append(array[1]);
+
+	option3.Attributes.Add("value", "2");
+	option3.InnerHtml.Append(array[2]);
+
+	option4.Attributes.Add("value", "3");
+	option4.InnerHtml.Append(array[3]);
+
+
+
+	if (Model.Position == 0)
+	{
+		option1.Attributes.Add("Selected", "Selected");
+	}
+
+	else if (Model.Position == 1)
+	{
+		option2.Attributes.Add("Selected", "Selected");
+	}
+
+	else if (Model.Position == 2)
+	{
+		option3.Attributes.Add("Selected", "Selected");
+	}
+
+	else
+	{
+		option4.Attributes.Add("Selected", "Selected");
+
+	}
+
+
+	tb.InnerHtml.AppendHtml(option1);
+	tb.InnerHtml.AppendHtml(option2);
+	tb.InnerHtml.AppendHtml(option3);
+	tb.InnerHtml.AppendHtml(option4);
+}
+
+
+<h2>Edit</h2>
+
+<h4>Advertisement</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+		<form asp-action="Edit" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="ID" />
+			<div class="form-group">
+				<label asp-for="AdvertName" class="control-label"></label>
+				<input asp-for="AdvertName" class="form-control" />
+				<span asp-validation-for="AdvertName" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="AdvertDescription" class="control-label"></label>
+				<input asp-for="AdvertDescription" class="form-control" />
+				<span asp-validation-for="AdvertDescription" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="AdUrl" class="control-label"></label>
+				<input type="file" asp-for="AdUrl" class="form-control" />
+				<span asp-validation-for="AdUrl" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="hidden" asp-for="AdvertImage" class="form-control" />
+			</div>
+			<div class="form-group">
+				<label asp-for="StartDate" class="control-label"></label>
+				<input asp-for="StartDate" class="form-control" />
+				<span asp-validation-for="StartDate" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="EndDate" class="control-label"></label>
+				<input asp-for="EndDate" class="form-control" />
+				<span asp-validation-for="EndDate" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Position" class="control-label"></label>
+				@tb
+				<span asp-validation-for="Position" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CategoryID" class="control-label"></label>
+				<select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
+				<span asp-validation-for="CategoryID" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-default" />
+			</div>
+		</form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	}
